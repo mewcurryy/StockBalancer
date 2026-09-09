@@ -1,0 +1,16 @@
+{
+  "shipping": {
+    "WH-JKT->WH-SBY": {"cost_idr": 850000, "lead_time_days": 2},
+    "WH-SBY->WH-JKT": {"cost_idr": 850000, "lead_time_days": 2},
+    "WH-JKT->WH-MDN": {"cost_idr": 1400000, "lead_time_days": 3},
+    "WH-MDN->WH-JKT": {"cost_idr": 1400000, "lead_time_days": 3},
+    "WH-JKT->WH-MKS": {"cost_idr": 1600000, "lead_time_days": 4},
+    "WH-MKS->WH-JKT": {"cost_idr": 1600000, "lead_time_days": 4},
+    "WH-SBY->WH-MKS": {"cost_idr": 1300000, "lead_time_days": 3},
+    "WH-MKS->WH-SBY": {"cost_idr": 1300000, "lead_time_days": 3},
+    "WH-SBY->WH-MDN": {"cost_idr": 1750000, "lead_time_days": 4},
+    "WH-MDN->WH-SBY": {"cost_idr": 1750000, "lead_time_days": 4},
+    "WH-MDN->WH-MKS": {"cost_idr": 2000000, "lead_time_days": 5},
+    "WH-MKS->WH-MDN": {"cost_idr": 2000000, "lead_time_days": 5}
+  }
+}

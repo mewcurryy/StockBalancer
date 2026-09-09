@@ -1,0 +1,25 @@
+{
+  "warehouses": ["WH-JKT", "WH-SBY", "WH-MDN", "WH-MKS"],
+  "warehouse_names": {
+    "WH-JKT": "Gudang Jakarta",
+    "WH-SBY": "Gudang Surabaya",
+    "WH-MDN": "Gudang Medan",
+    "WH-MKS": "Gudang Makassar"
+  },
+  "materials": {
+    "MAT-001": {
+      "name": "Kabel Listrik 2.5mm (roll)",
+      "margin_per_unit_idr": 45000,
+      "stock": {"WH-JKT": 850, "WH-SBY": 40, "WH-MDN": 120, "WH-MKS": 300},
+      "reorder_point": {"WH-JKT": 150, "WH-SBY": 150, "WH-MDN": 100, "WH-MKS": 100},
+      "avg_daily_demand": {"WH-JKT": 20, "WH-SBY": 18, "WH-MDN": 8, "WH-MKS": 10}
+    },
+    "MAT-002": {
+      "name": "Panel Surya 100Wp",
+      "margin_per_unit_idr": 320000,
+      "stock": {"WH-JKT": 30, "WH-SBY": 210, "WH-MDN": 15, "WH-MKS": 60},
+      "reorder_point": {"WH-JKT": 50, "WH-SBY": 60, "WH-MDN": 40, "WH-MKS": 40},
+      "avg_daily_demand": {"WH-JKT": 4, "WH-SBY": 5, "WH-MDN": 2, "WH-MKS": 3}
+    }
+  }
+}
