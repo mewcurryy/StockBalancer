@@ -1,0 +1,40 @@
+{
+  "documents": [
+    {
+      "MaterialDocument": "MOCK-100002",
+      "MaterialDocumentYear": "2026",
+      "PostingDate": "2026-09-10T00:00:00",
+      "GoodsMovementType": "501",
+      "Material": "MAT-002",
+      "Plant": "WH-JKT",
+      "StorageLocation": "WH-JKT",
+      "QuantityInEntryUnit": "48",
+      "EntryUnit": "PC",
+      "Source": "mock_sap_client (simulasi SAP saja)"
+    },
+    {
+      "MaterialDocument": "MOCK-100003",
+      "MaterialDocumentYear": "2026",
+      "PostingDate": "2026-09-10T00:00:00",
+      "GoodsMovementType": "501",
+      "Material": "MAT-001",
+      "Plant": "WH-SBY",
+      "StorageLocation": "WH-SBY",
+      "QuantityInEntryUnit": "150",
+      "EntryUnit": "PC",
+      "Source": "mock_sap_client (simulasi SAP saja)"
+    },
+    {
+      "MaterialDocument": "MOCK-100004",
+      "MaterialDocumentYear": "2026",
+      "PostingDate": "2026-09-10T00:00:00",
+      "GoodsMovementType": "501",
+      "Material": "MAT-001",
+      "Plant": "WH-SBY",
+      "StorageLocation": "WH-SBY",
+      "QuantityInEntryUnit": "150",
+      "EntryUnit": "PC",
+      "Source": "mock_sap_client (simulasi SAP saja)"
+    }
+  ]
+}

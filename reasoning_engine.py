@@ -35,7 +35,7 @@ def reason_with_claude(context: dict) -> dict:
 
     client = Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
     response = client.messages.create(
-        model="claude-haiku-4-5-20251001",  # model murah & cepat, cukup untuk reasoning terstruktur begini
+        model="claude-haiku-4-5-20251001",
         max_tokens=500,
         messages=[{"role": "user", "content": build_prompt(context)}],
     )
@@ -45,29 +45,50 @@ def reason_with_claude(context: dict) -> dict:
 
 def reason_with_rules(context: dict) -> dict:
     """
-    Default & fallback, 100% lokal, tanpa API. Logika sederhana:
-    nilai potensi lost sales selama lead time vs ongkos kirim.
+    Default & fallback, 100% lokal, tanpa API.
+    Ngecek 2 syarat terpisah, dan pesannya dibedakan sesuai alasan sebenarnya:
+      1) Apakah worth secara untung-rugi (potensi rugi > ongkos kirim)?
+      2) Apakah gudang sumber punya surplus stok yang cukup buat benar-benar dikirim?
     """
-    deficit_during_leadtime = max(
-        0, (context["target_demand"] * context["lead_time_days"]) - context["target_stock"]
-    )
+    kebutuhan_selama_kirim = context["target_demand"] * context["lead_time_days"]
+    deficit_during_leadtime = max(0, kebutuhan_selama_kirim - context["target_stock"])
     potential_lost_sales_value = deficit_during_leadtime * context["margin_per_unit"]
     net_benefit = potential_lost_sales_value - context["shipping_cost"]
+    worth_it = net_benefit > 0
 
-    recommend = net_benefit > 0
-    suggested_qty = min(
-        context["source_stock"] - context["source_reorder"],
-        max(deficit_during_leadtime, context["target_reorder"] - context["target_stock"]),
-    )
-    suggested_qty = max(0, int(suggested_qty))
+    source_surplus = max(0, context["source_stock"] - context["source_reorder"])
+    target_need = max(deficit_during_leadtime, context["target_reorder"] - context["target_stock"])
+    suggested_qty = max(0, int(min(source_surplus, target_need)))
 
-    reasoning = (
-        f"Estimasi potensi kerugian akibat stockout selama {context['lead_time_days']} hari "
-        f"lead time adalah Rp{potential_lost_sales_value:,.0f}, dibanding ongkos kirim "
-        f"Rp{context['shipping_cost']:,.0f}. "
-        + ("Transfer ini menguntungkan secara ekonomis." if recommend
-           else "Ongkos kirim tidak sepadan dengan risiko stockout yang ada, transfer ditunda.")
-    )
+    recommend = worth_it and suggested_qty > 0
+
+    if deficit_during_leadtime == 0:
+        reasoning = (
+            f"Stok gudang tujuan masih {context['target_stock']} unit, cukup untuk "
+            f"{context['lead_time_days']} hari ke depan (butuh sekitar {kebutuhan_selama_kirim} unit). "
+            f"Belum akan habis sebelum kiriman baru sampai, jadi transfer belum mendesak — "
+            f"meski stoknya sudah di bawah batas aman (reorder point)."
+        )
+    elif not worth_it:
+        reasoning = (
+            f"Gudang tujuan memang akan kekurangan {deficit_during_leadtime} unit "
+            f"(potensi rugi Rp{potential_lost_sales_value:,.0f}), tapi ongkos kirim "
+            f"Rp{context['shipping_cost']:,.0f} lebih mahal dari potensi rugi itu, jadi belum sepadan."
+        )
+    elif suggested_qty == 0:
+        reasoning = (
+            f"Secara untung-rugi transfer ini sebenarnya layak (potensi rugi "
+            f"Rp{potential_lost_sales_value:,.0f} lebih besar dari ongkos kirim Rp{context['shipping_cost']:,.0f}), "
+            f"tapi gudang sumber tidak punya surplus stok yang cukup untuk dikirim tanpa membuat stoknya "
+            f"sendiri jatuh di bawah batas aman. Transfer ditunda sampai stok sumber cukup."
+        )
+    else:
+        reasoning = (
+            f"Kalau tidak ditransfer, gudang tujuan diperkirakan kekurangan {deficit_during_leadtime} unit "
+            f"sebelum kiriman sampai (potensi rugi Rp{potential_lost_sales_value:,.0f}). "
+            f"Ongkos kirim cuma Rp{context['shipping_cost']:,.0f} — lebih murah dari potensi ruginya, "
+            f"jadi transfer ini layak dilakukan."
+        )
 
     return {
         "recommend_transfer": recommend,
@@ -78,7 +99,6 @@ def reason_with_rules(context: dict) -> dict:
 
 
 def _parse_json_response(text: str) -> dict:
-    # Claude kadang membungkus JSON dengan ```json ... ``` — bersihkan dulu
     cleaned = text.replace("```json", "").replace("```", "").strip()
     return json.loads(cleaned)
 

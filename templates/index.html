@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StockBalancer — Agent Rebalancing Stok</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <div class="brand">
+      <span class="brand-mark">SB</span>
+      <div class="brand-text">
+        <span class="brand-name">StockBalancer</span>
+        <span class="brand-sub">Cross-Warehouse Rebalancing Agent</span>
+      </div>
+    </div>
+    <div class="agent-status" id="agentStatus">
+      <span class="status-dot" id="statusDot"></span>
+      <span id="statusLabel">Agent siap</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="lede">
+    <h1>Satu agent, tiga langkah: lihat stok, jalankan analisis, lihat keputusannya.</h1>
+    <p>Data di bawah ini simulasi 4 gudang. Ubah angka stok kalau mau, lalu jalankan agent untuk melihat
+       bagaimana ia mendeteksi ketimpangan, menghitung untung-rugi transfer, dan mengeksekusinya ke SAP (mock).</p>
+  </section>
+
+  <!-- ============ STEP 1 — INPUT ============ -->
+  <section class="panel" id="panel-input">
+    <div class="panel-head">
+      <span class="step-no">1</span>
+      <div>
+        <h2>Data Gudang <span class="tag">Input</span></h2>
+        <p class="panel-desc">Klik salah satu angka stok untuk mengedit skenario, lalu simpan.</p>
+      </div>
+    </div>
+
+    <div class="table-scroll">
+      <table class="data-table" id="stockTable">
+        <thead>
+          <tr id="stockTableHead"></tr>
+        </thead>
+        <tbody id="stockTableBody"></tbody>
+      </table>
+    </div>
+
+    <div class="panel-actions">
+      <button class="btn btn-ghost" id="btnReset">Reset ke Data Awal</button>
+      <button class="btn btn-outline" id="btnSaveStock">Simpan Perubahan Stok</button>
+    </div>
+  </section>
+
+  <!-- ============ STEP 2 — PROCESS ============ -->
+  <section class="panel panel-process" id="panel-process">
+    <div class="panel-head">
+      <span class="step-no">2</span>
+      <div>
+        <h2>Jalankan Agent <span class="tag">Process</span></h2>
+        <p class="panel-desc">Agent bakal cek semua gudang, cari yang stoknya nggak seimbang, lalu hitung untung-ruginya kalau dipindah.</p>
+      </div>
+    </div>
+    <button class="btn btn-primary btn-run" id="btnRun">
+      <span id="btnRunLabel">Jalankan Analisis Agent</span>
+    </button>
+    <p class="hint" id="runHint"></p>
+  </section>
+
+  <!-- ============ STEP 3 — OUTPUT ============ -->
+  <section class="panel" id="panel-output">
+    <div class="panel-head">
+      <span class="step-no">3</span>
+      <div>
+        <h2>Keputusan Agent <span class="tag">Output</span></h2>
+        <p class="panel-desc">Setiap kandidat ketimpangan yang ditemukan, beserta alasan dan aksinya.</p>
+      </div>
+    </div>
+    <div id="resultsEmpty" class="empty-state">Belum ada hasil. Jalankan agent di atas untuk melihat keputusannya di sini.</div>
+    <div id="resultsFeed" class="results-feed"></div>
+  </section>
+
+  <!-- ============ MANUAL SIMULATOR ============ -->
+  <section class="panel panel-alt" id="panel-simulate">
+    <div class="panel-head">
+      <h2>Coba Hitungan Sendiri</h2>
+      <p class="panel-desc">Isi angka sendiri buat lihat cara agent mikir — tidak mengubah data gudang di atas.</p>
+    </div>
+
+    <form id="simForm" class="sim-form">
+      <div class="field">
+        <label for="sim_material_name">Nama material</label>
+        <input type="text" id="sim_material_name" value="Ban Motor Ring 14" required>
+      </div>
+      <div class="field">
+        <label for="sim_source_wh">Nama gudang sumber</label>
+        <input type="text" id="sim_source_wh" value="Gudang A" required>
+      </div>
+      <div class="field">
+        <label for="sim_source_stock">Stok gudang sumber</label>
+        <input type="number" id="sim_source_stock" value="500" required>
+      </div>
+      <div class="field">
+        <label for="sim_source_reorder">Reorder point sumber</label>
+        <input type="number" id="sim_source_reorder" value="100" required>
+      </div>
+      <div class="field">
+        <label for="sim_target_wh">Nama gudang tujuan</label>
+        <input type="text" id="sim_target_wh" value="Gudang B" required>
+      </div>
+      <div class="field">
+        <label for="sim_target_stock">Stok gudang tujuan</label>
+        <input type="number" id="sim_target_stock" value="15" required>
+      </div>
+      <div class="field">
+        <label for="sim_target_reorder">Reorder point tujuan</label>
+        <input type="number" id="sim_target_reorder" value="80" required>
+      </div>
+      <div class="field">
+        <label for="sim_target_demand">Demand harian tujuan</label>
+        <input type="number" id="sim_target_demand" value="12" required>
+      </div>
+      <div class="field">
+        <label for="sim_margin">Margin per unit (Rp)</label>
+        <input type="number" id="sim_margin" value="60000" required>
+      </div>
+      <div class="field">
+        <label for="sim_shipping">Ongkos kirim (Rp)</label>
+        <input type="number" id="sim_shipping" value="900000" required>
+      </div>
+      <div class="field">
+        <label for="sim_leadtime">Lead time (hari)</label>
+        <input type="number" id="sim_leadtime" value="3" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Uji Reasoning</button>
+    </form>
+
+    <div id="simResult" class="sim-result"></div>
+  </section>
+
+  <!-- ============ LEDGER ============ -->
+  <section class="panel" id="panel-ledger">
+    <div class="panel-head">
+      <h2>Riwayat Transfer <span class="tag tag-mock">Simulasi</span></h2>
+      <p class="panel-desc">Catatan setiap transfer yang sudah dieksekusi agent (simulasi lokal, bukan SAP asli).</p>
+    </div>
+    <div class="table-scroll">
+      <table class="data-table" id="ledgerTable">
+        <thead>
+          <tr>
+            <th>No. Dokumen</th>
+            <th>Material</th>
+            <th>Plant Tujuan</th>
+            <th>Qty</th>
+            <th>Movement Type</th>
+            <th>Tanggal Posting</th>
+          </tr>
+        </thead>
+        <tbody id="ledgerTableBody"></tbody>
+      </table>
+    </div>
+    <div id="ledgerEmpty" class="empty-state">Belum ada dokumen. Jalankan agent dan biarkan ada transfer yang disetujui.</div>
+  </section>
+
+  <footer class="footer">
+    <p>StockBalancer POC — reasoning engine: rule-based · data &amp; SAP call: simulasi lokal</p>
+  </footer>
+
+</main>
+
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
