@@ -12,9 +12,7 @@ function setStatus(mode, label) {
   text.textContent = label;
 }
 
-// --------------------------------------------------------------------
-// STEP 1 — render & edit tabel stok (INPUT)
-// --------------------------------------------------------------------
+// input
 
 function renderStockTable(stockData) {
   currentStockData = stockData;
@@ -97,9 +95,7 @@ async function resetState() {
   setStatus("", "Agent siap");
 }
 
-// --------------------------------------------------------------------
-// STEP 2 & 3 — jalankan agent (PROCESS) & render hasil (OUTPUT)
-// --------------------------------------------------------------------
+// process and output
 
 function renderResults(results) {
   const feed = document.getElementById("resultsFeed");
@@ -108,7 +104,7 @@ function renderResults(results) {
 
   if (results.length === 0) {
     empty.style.display = "block";
-    empty.textContent = "Tidak ada ketimpangan stok yang terdeteksi saat ini — semua gudang dalam kondisi seimbang.";
+    empty.textContent = "Tidak ada ketimpangan stok yang terdeteksi saat ini, semua gudang dalam kondisi seimbang.";
     return;
   }
   empty.style.display = "none";
@@ -121,7 +117,7 @@ function renderResults(results) {
     card.innerHTML = `
       <div class="result-top">
         <div class="result-route">
-          ${r.material_name} — ${r.source_wh_name}<span class="arrow">&rarr;</span>${r.target_wh_name}
+          ${r.material_name} - ${r.source_wh_name}<span class="arrow">&rarr;</span>${r.target_wh_name}
         </div>
         <span class="badge ${approved ? "approved" : "rejected"}">
           ${approved ? "TRANSFER DISETUJUI" : "TRANSFER DITOLAK"}

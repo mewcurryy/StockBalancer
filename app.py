@@ -1,18 +1,3 @@
-"""
-app.py — StockBalancer Web (POC)
-
-Web wrapper (Flask) di atas logic agent yang sudah dibuat sebelumnya:
-- reasoning_engine.py  (default: rule_based, tanpa API key apapun)
-- mock_sap_client.py   (simulasi SAP, tersimpan sebagai ledger JSON lokal)
-
-Alur di web ini persis mengikuti alur main.py versi CLI:
-monitor stok -> deteksi ketimpangan -> reasoning -> keputusan -> aksi (mock SAP)
-
-Cara jalankan:
-    pip install -r requirements.txt
-    python app.py
-Lalu buka http://127.0.0.1:5000 di browser.
-"""
 import json
 import os
 import shutil
@@ -120,7 +105,6 @@ def update_stock():
 
 @app.route("/api/state/reset", methods=["POST"])
 def reset_state():
-    """Kembalikan data stok ke kondisi awal & kosongkan ledger — untuk demo berulang."""
     shutil.copyfile(STOCK_DEFAULT_PATH, STOCK_PATH)
     save_json(LEDGER_PATH, {"documents": []})
     return jsonify({"status": "ok"})
@@ -128,10 +112,6 @@ def reset_state():
 
 @app.route("/api/run", methods=["POST"])
 def run_agent():
-    """
-    PROCESS + OUTPUT: jalankan satu siklus penuh agent —
-    scan -> deteksi -> reasoning -> keputusan -> aksi (mock SAP) -> update stok.
-    """
     stock_data = load_json(STOCK_PATH)
     shipping_data = load_json(SHIPPING_PATH)
     wh_names = stock_data["warehouse_names"]

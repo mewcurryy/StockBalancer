@@ -66,7 +66,7 @@ def reason_with_rules(context: dict) -> dict:
         reasoning = (
             f"Stok gudang tujuan masih {context['target_stock']} unit, cukup untuk "
             f"{context['lead_time_days']} hari ke depan (butuh sekitar {kebutuhan_selama_kirim} unit). "
-            f"Belum akan habis sebelum kiriman baru sampai, jadi transfer belum mendesak — "
+            f"Belum akan habis sebelum kiriman baru sampai, jadi transfer belum mendesak "
             f"meski stoknya sudah di bawah batas aman (reorder point)."
         )
     elif not worth_it:
@@ -86,7 +86,7 @@ def reason_with_rules(context: dict) -> dict:
         reasoning = (
             f"Kalau tidak ditransfer, gudang tujuan diperkirakan kekurangan {deficit_during_leadtime} unit "
             f"sebelum kiriman sampai (potensi rugi Rp{potential_lost_sales_value:,.0f}). "
-            f"Ongkos kirim cuma Rp{context['shipping_cost']:,.0f} — lebih murah dari potensi ruginya, "
+            f"Ongkos kirim cuma Rp{context['shipping_cost']:,.0f}, lebih murah dari potensi ruginya, "
             f"jadi transfer ini layak dilakukan."
         )
 

@@ -67,7 +67,7 @@ def print_header(text):
 
 
 def main():
-    print_header("STOCKBALANCER AGENT — MULAI MONITORING (MODE MOCK, TANPA SAP/AWS ASLI)")
+    print_header("STOCKBALANCER AGENT MULAI MONITORING (MODE MOCK, TANPA SAP/AWS ASLI)")
     print(f"Mode reasoning: {os.environ.get('REASONING_MODE', 'rule_based')}")
 
     stock_data = load_json("data/stock_data.json")
@@ -109,7 +109,7 @@ def main():
             print("  BERHASIL (mock). Nomor dokumen simulasi:")
             print(json.dumps(result, indent=2)[:800])
 
-    print_header("SELESAI — AUDIT TRAIL DI ATAS ADALAH LOG LENGKAP KEPUTUSAN AGENT")
+    print_header("SELESAI. AUDIT TRAIL DI ATAS ADALAH LOG LENGKAP KEPUTUSAN AGENT")
     print("Semua transaksi mock tersimpan di data/mock_sap_ledger.json")
 
 

@@ -20,12 +20,12 @@ Buka **http://127.0.0.1:5000** di browser.
 
 ## Alur di halaman web
 
-1. **Input** — tabel stok 4 gudang x 2 material. Klik angka di kolom "Stok Saat Ini"
+1. **Input** -> tabel stok 4 gudang x 2 material. Klik angka di kolom "Stok Saat Ini"
    untuk mengubah skenario, lalu klik **Simpan Perubahan Stok**.
-2. **Process** — klik **Jalankan Analisis Agent**. Ini menjalankan siklus penuh:
+2. **Process** -> klik **Jalankan Analisis Agent**. Ini menjalankan siklus penuh:
    scan stok → deteksi ketimpangan → reasoning engine → keputusan → (kalau disetujui)
    membuat "Material Document" mock di SAP, dan meng-update angka stok.
-3. **Output** — daftar setiap kandidat ketimpangan yang ditemukan, disetujui atau
+3. **Output** -> daftar setiap kandidat ketimpangan yang ditemukan, disetujui atau
    ditolak, lengkap dengan alasannya. Kalau disetujui, ada nomor dokumen mock.
 
 Di bawahnya juga ada:
